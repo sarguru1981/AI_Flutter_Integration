@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:csv/csv.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
+import 'food_item_card.dart';
+
 class FoodListPage extends StatefulWidget {
   const FoodListPage({super.key});
 
@@ -157,10 +159,14 @@ class _FoodListPageState extends State<FoodListPage> {
                 itemCount: filteredItems.length,
                 itemBuilder: (context, index) {
                   final item = filteredItems[index];
-                  return ListTile(
-                    title: Text(item[0]),
-                    subtitle: Text(
-                        'Category: ${item[1]}, Timing: ${item[2]}, Location: ${item[3]}'),
+                  return FoodItemCard(
+                    itemName: item[0],
+                    category: item[1],
+                    timing: item[2],
+                    location: item[3],
+                    onAddToCart: () {
+                      // Handle add to cart action here
+                    },
                   );
                 },
               ),
