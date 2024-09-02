@@ -112,47 +112,61 @@ class _FoodListPageState extends State<FoodListPage> {
       appBar: AppBar(
         title: const Text("Search Food Items"),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _controller,
-              decoration: InputDecoration(
-                hintText: 'Search food items...',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _controller,
+                    decoration: InputDecoration(
+                      hintText: 'Search food items...',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      prefixIcon: const Icon(Icons.search),
+                      suffixIcon: _controller.text.isNotEmpty // Show clear button if text is present
+                          ? IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () {
+                          _controller.clear(); // Clear the text field
+                          setState(() {
+                            filteredItems = List.from(_originalItems); // Reset the filtered list
+                          });
+                        },
+                      )
+                          : null,
+                    ),
+                    onChanged: (query) { // Trigger search on text change
+                      _onSearchChanged(query);
+                    },
+                  ),
                 ),
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon: _controller.text.isNotEmpty
-                    ? IconButton(
-                  icon: Icon(Icons.clear),
+                IconButton(
+                  icon: const Icon(Icons.mic),
                   onPressed: () {
-                    _controller.clear();
-                    setState(() {
-                      filteredItems = List.from(_originalItems); // Reset to original list
-                      _suggestions = []; // Clear suggestions
-                    });
+                    // Add your voice-to-text functionality here
                   },
-                )
-                    : null,
+                ),
+              ],
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: filteredItems.length,
+                itemBuilder: (context, index) {
+                  final item = filteredItems[index];
+                  return ListTile(
+                    title: Text(item[0]),
+                    subtitle: Text(
+                        'Category: ${item[1]}, Timing: ${item[2]}, Location: ${item[3]}'),
+                  );
+                },
               ),
-              onChanged: _onSearchChanged,
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: filteredItems.length,
-              itemBuilder: (context, index) {
-                final item = filteredItems[index];
-                return ListTile(
-                  title: Text(item[0]), // Assuming the name is in the 1st column
-                  subtitle: Text('Category: ${item[1]}, Timing: ${item[2]}, Location: ${item[3]}'),
-                );
-              },
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
